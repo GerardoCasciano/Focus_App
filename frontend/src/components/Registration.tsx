@@ -67,11 +67,13 @@ export const Registration: React.FC = () => {
   return (
     <div className="mobile-bg">
       <Container className="py-4">
-        <Card className="mobile-card border-0 shadow-lg">
+        <Card className="mobile-card border-0 shadow-lg ">
           <Card.Body style={{ position: "relative", padding: "30px" }}>
             {isLoading && (
               <Loader
-                message={FORM_TRANSLATIONS[currentLang] || "LOADING..."}
+                message={
+                  FORM_TRANSLATIONS[currentLang]?.loading || "LOADING..."
+                }
               />
             )}
             <div className={isLoading ? "form-loading-blur" : ""}>
@@ -82,10 +84,14 @@ export const Registration: React.FC = () => {
 
               <Form noValidate validated={validated} onSubmit={handleSubmit}>
                 <Row className="mb-3">
-                  <Form.Group as={Col} xs="7" controlId="validationUsername">
-                    <Form.Label className="label-custom">Username </Form.Label>
+                  <Form.Group as={Col} xs="12" controlId="validationUsername">
+                    <Form.Label className="label-custom">
+                      {" "}
+                      {FORM_TRANSLATIONS[currentLang]?.username}{" "}
+                    </Form.Label>
+
                     <InputGroup hasValidation>
-                      <InputGroup.Text className="input-custom-addon">
+                      <InputGroup.Text className="input-custom-addon ">
                         @
                       </InputGroup.Text>
 
@@ -96,29 +102,27 @@ export const Registration: React.FC = () => {
                         name="username"
                         className="input-custom"
                       />
-                      <Form.Control.Feedback type="invalid">
-                        Scegli un username
-                      </Form.Control.Feedback>
                     </InputGroup>
                   </Form.Group>
                 </Row>
                 <Row className="mb-3">
                   <Form.Group as={Col} xs="12" controlId="validationEmail">
-                    <Form.Label className="label-custom">Email</Form.Label>
+                    <Form.Label className="label-custom">
+                      {FORM_TRANSLATIONS[currentLang]?.email}
+                    </Form.Label>
                     <Form.Control
                       required
                       type="email"
                       placeholder="inserisci@email.com"
                       className="input-custom"
                     />
-                    <Form.Control.Feedback type="invalid">
-                      Inserisci una email valida
-                    </Form.Control.Feedback>
                   </Form.Group>
                 </Row>
                 <Row className="mb-">
                   <Form.Group as={Col} xs="12" controlId="validationPassword">
-                    <Form.Label className="label-custom">Password</Form.Label>
+                    <Form.Label className="label-custom">
+                      {FORM_TRANSLATIONS[currentLang]?.password}
+                    </Form.Label>
                     <Form.Control
                       required
                       type="password"
@@ -133,10 +137,13 @@ export const Registration: React.FC = () => {
                 <Form.Group
                   as={Col}
                   xs="5"
-                  controlId="validationLenguage"
+                  controlId="validationLanguage"
                   className="mt-3"
                 >
-                  <Form.Label className="label-custom">Lingua</Form.Label>
+                  <Form.Label className="label-custom">
+                    {FORM_TRANSLATIONS[currentLang]?.language}
+                  </Form.Label>
+
                   <Form.Select
                     required
                     name="language"
