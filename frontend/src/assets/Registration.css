@@ -83,10 +83,6 @@
    font-weight: bold;
 }
 
-/* .input-custom:focus {
-    outline: 4px solid var(--focus-outline) !important;
-    outline-offset: 2px;
-} */
 
 .input-custom-addon{
     background-color: #333333;

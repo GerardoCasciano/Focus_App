@@ -3,9 +3,9 @@ import Webcam from "react-webcam";
 // confugurazione fotocamera posteriore
 
 const videoCamSet = {
-  width: { min: 640, ideal: 1929, max: 2560 },
+  width: { min: 640, ideal: 1920, max: 2560 },
   height: { min: 480, ideal: 1000, max: 1440 },
-  facingMode: "enviromoent",
+  facingMode: "environment",
 };
 // funzione per passare la foto allo scanner
 
@@ -35,20 +35,12 @@ export const CameraView: React.FC<CameraViewProps> = ({
     }
   }, [onCapture]);
   return (
-    <div
-      className="camera-view-container"
-      style={{ width: "100%", height: "100%" }}
-    >
+    <div className="camera-view-container">
       <Webcam
         audio={false}
         ref={webcamRef}
         screenshotFormat="image/jpeg"
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-        }}
-        className={isAnalyzing ? "webcam-blur" : ""}
+        className={`webcam-feed ${isAnalyzing} ? "webcam-blur" : ""`}
       />
     </div>
   );

@@ -1,0 +1,80 @@
+div.scanner-container{
+    position: relative;
+    height: 100vh;
+    background-color: #000;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+div.camera-container-wrapper{
+    height: 80%;
+    position: relative;
+    width: 100%;
+}
+/* effetto sfocatura durante il loadin  */
+div.from-loading-blur{
+    filter:blur(8px);
+    transition: filter 0.3s ease;
+}
+
+/* mirino  */
+div.scanner-reticle{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 280px;
+    height: 280px;
+    border: 6px solid #02ccff;
+    box-shadow: 0 0 20px rgba(2, 204, 255, 0.4);
+    z-index: 5;
+    pointer-events: none;
+}
+div.scan-reticle-active{
+    animation: pulse-azure 1.5s infinite ease-in-out;
+    border-color: #fff;
+}
+
+@keyframes pulse-azure {
+    0%{transform: translate(-50%, -50%) scale(1); opacity: 0.8;}
+    50%{transform: translate(-50%, -50%) scale(1.05); opacity: 1}
+    100%{transform: translate(-50%, -50%) scale(1); opacity: 0.8}
+}
+
+/* colori riusultato  */
+div.scan-result-overlay{
+    position: absolute;
+    bottom: 20px;
+    left: 5%;
+    width: 90%;
+    background-color: #FFD700;
+    color: #000;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    z-index: 10;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* bottone dello scan  */
+div.scanner-controls{
+    height: 20%;
+    background-color: #111;
+}
+button.btn-scan-main{
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: #02ccff;
+    border: 5px solid #fff;
+    color: #000;
+    font-weight: 900;
+    font-size: 1.2rem;
+    box-shadow: 0 0 15px rgba(2, 204, 255, 0.5);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.btn-scan-main:active{
+    transform: scale(0.9);
+    box-shadow: 0 0 5px rgba(2, 204, 255, 0.8);
+}
