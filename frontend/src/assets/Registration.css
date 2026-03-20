@@ -54,6 +54,7 @@
     animation: formFadeIn 1s ease-out 2s forwards;
     transform: translateY(30px);
     margin-left: 0.8rem;
+
 }
 
 .mobile-card .black{
@@ -116,6 +117,7 @@
     text-transform: uppercase;
     font-weight: bold;
     letter-spacing: 25%;
+   padding: 0;
 }
 
 .small-check .form-check-label{

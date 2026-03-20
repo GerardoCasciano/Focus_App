@@ -66,7 +66,7 @@ export const Registration: React.FC = () => {
   };
   return (
     <div className="mobile-bg">
-      <Container className="py-4">
+      <Container className="py-4 mb-1">
         <Card className="mobile-card border-0 shadow-lg ">
           <Card.Body style={{ position: "relative", padding: "30px" }}>
             {isLoading && (
@@ -148,6 +148,8 @@ export const Registration: React.FC = () => {
                     required
                     name="language"
                     className="input-custom"
+                    value={currentLang}
+                    onChange={(event) => setCurrentLang(event.target.value)}
                   >
                     {LANGUAGES.map((lang) => (
                       <option key={lang.code} value={lang.code}>
@@ -166,7 +168,9 @@ export const Registration: React.FC = () => {
                   />
                 </Form.Group>
                 <Button type="submit" className="w-100 btn-azure">
-                  REGISTRATI
+                  {isLoading
+                    ? FORM_TRANSLATIONS[currentLang]?.loading
+                    : FORM_TRANSLATIONS[currentLang]?.register}
                 </Button>
               </Form>
             </div>

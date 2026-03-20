@@ -14,7 +14,8 @@ export const LOADER_TRANSLATIONS: Record<string, string> = {
     password: "PASSWORD", 
     terms: "Accetto i Termini e le Condizioni",
     register: "REGISTRATI",
-    loading: "CARICAMENTO..."
+    loading: "CARICAMENTO...",
+     ai_analyzing: "IA: RICONOSCIMENTO..."
   },
   EN: { 
     username: "USERNAME", 
@@ -23,7 +24,8 @@ export const LOADER_TRANSLATIONS: Record<string, string> = {
     password: "PASSWORD", 
     terms: "I accept the Terms and Conditions",
     register: "REGISTER",
-    loading: "LOADING..."
+    loading: "LOADING...",
+    ai_analyzing: "AI: RECOGNIZING..."
   },
   FR: { 
     username: "NOM D'UTILISATEUR", 
@@ -32,7 +34,8 @@ export const LOADER_TRANSLATIONS: Record<string, string> = {
     password: "MOT DE PASSE", 
     terms: "J'accepte le Termes et Conditions",
     register: "S'INSCRIRE",
-    loading: "CHARGEMENT..."
+    loading: "CHARGEMENT...",
+    ai_analyzing: "IA: RECONNAISSANCE..."
   },
   ES: { 
     username: "NOMBRE DE USUARIO", 
@@ -41,7 +44,8 @@ export const LOADER_TRANSLATIONS: Record<string, string> = {
     password: "CONTRASEÑA", 
     terms: "Acepto i Términos y Condiciones",
     register: "REGISTRARSE",
-    loading: "CARGANDO..."
+    loading: "CARGANDO...",
+    ai_analyzing: "IA: RECONOCIENDO..."
   },
   ZH: { 
     username: "用户名", 
@@ -50,7 +54,8 @@ export const LOADER_TRANSLATIONS: Record<string, string> = {
     password: "密码", 
     terms: "我接受条款和条件",
     register: "注册",
-    loading: "载入中..."
+    loading: "载入中...",
+    ai_analyzing: "人工智能：识别中..."
   },
   JA: { 
     username: "ユーザー名", 
@@ -59,6 +64,7 @@ export const LOADER_TRANSLATIONS: Record<string, string> = {
     password: "パスワード", 
     terms: "利用規約に同意する",
     register: "登録",
-    loading: "読み込み中..."
+    loading: "読み込み中...",
+    ai_analyzing: "AI: 認識中..."
   }
 };
