@@ -1,70 +1,56 @@
-
-export const LOADER_TRANSLATIONS: Record<string, string> = {
-  IT: "CARICAMENTO...",
-  EN: "LOADING...",
-  FR: "CHARGEMENT...",
-  ES: "CARGANDO...",
-  ZH: "载入中...",
-  JA: "読み込み中..."
-};export const FORM_TRANSLATIONS: Record<string, any> = {
-  IT: { 
-    username: "NOME UTENTE", 
-    email: "INDIRIZZO EMAIL", 
-    language: "LINGUA PREFERITA",
-    password: "PASSWORD", 
-    terms: "Accetto i Termini e le Condizioni",
-    register: "REGISTRATI",
+export const FORM_TRANSLATIONS: Record<string, any> = {
+  IT: {
     loading: "CARICAMENTO...",
-     ai_analyzing: "IA: RICONOSCIMENTO..."
+    ai_analyzing: "IA: RICONOSCIMENTO...",
+    listen: "🔊 ASCOLTA DESCRIZIONE",
+    go: " PORTAMI QUI",
+    username: "Nome Utente",
+    language: "Lingua",
+    register: "REGISTRATI"
   },
-  EN: { 
-    username: "USERNAME", 
-    email: "EMAIL ADDRESS", 
-    language: "PREFERRED LANGUAGE",
-    password: "PASSWORD", 
-    terms: "I accept the Terms and Conditions",
-    register: "REGISTER",
+  EN: {
     loading: "LOADING...",
-    ai_analyzing: "AI: RECOGNIZING..."
+    ai_analyzing: "AI: RECOGNIZING...",
+    listen: "🔊 LISTEN DESCRIPTION",
+    go: " GO HERE",
+    username: "Username",
+    language: "Language",
+    register: "REGISTER"
   },
-  FR: { 
-    username: "NOM D'UTILISATEUR", 
-    email: "ADRESSE EMAIL", 
-    language: "LANGUE PRÉFÉRÉE",
-    password: "MOT DE PASSE", 
-    terms: "J'accepte le Termes et Conditions",
-    register: "S'INSCRIRE",
+  FR: {
     loading: "CHARGEMENT...",
-    ai_analyzing: "IA: RECONNAISSANCE..."
+    ai_analyzing: "IA: RECONNAISSANCE...",
+    listen: "🔊 ÉCOUTER LA DESCRIPTION",
+    go: " ALLER ICI",
+    username: "Nom d'utilisateur",
+    language: "Langue",
+    register: "S'INSCRIRE"
   },
-  ES: { 
-    username: "NOMBRE DE USUARIO", 
-    email: "CORREO ELECTRÓNICO", 
-    language: "IDIOMA PREFERIDO",
-    password: "CONTRASEÑA", 
-    terms: "Acepto i Términos y Condiciones",
-    register: "REGISTRARSE",
+  ES: {
     loading: "CARGANDO...",
-    ai_analyzing: "IA: RECONOCIENDO..."
+    ai_analyzing: "IA: RECONOCIENDO...",
+    listen: "🔊 ESCUCHAR DESCRIPCIÓN",
+    go: " IR AQUÍ",
+    username: "Nombre de usuario",
+    language: "Idioma",
+    register: "REGISTRARSE"
   },
-  ZH: { 
-    username: "用户名", 
-    email: "电子邮件地址", 
-    language: "首选语言",
-    password: "密码", 
-    terms: "我接受条款和条件",
-    register: "注册",
-    loading: "载入中...",
-    ai_analyzing: "人工智能：识别中..."
+  ZH: {
+    loading: "加载中...",
+    ai_analyzing: "人工智能：识别中...",
+    listen: "🔊 听取描述",
+    go: " 去这里",
+    username: "用户名",
+    language: "语言",
+    register: "注册"
   },
-  JA: { 
-    username: "ユーザー名", 
-    email: "メールアドレス", 
-    language: "希望の言語",
-    password: "パスワード", 
-    terms: "利用規約に同意する",
-    register: "登録",
+  JA: {
     loading: "読み込み中...",
-    ai_analyzing: "AI: 認識中..."
+    ai_analyzing: "AI：認識中...",
+    listen: "🔊 説明を聞く",
+    go: " ここに行く",
+    username: "ユーザー名",
+    language: "言語",
+    register: "登録"
   }
 };

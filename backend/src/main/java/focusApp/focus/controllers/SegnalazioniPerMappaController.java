@@ -52,7 +52,7 @@ private final SegnalazioneService segnalazioneService;
             @RequestParam(required = false)Double lat,
             @RequestParam(required = false)Double lon,
             @RequestParam(defaultValue = "1000") Double raggio,
-            @RequestParam List<String> categorie,
+            @RequestParam (required = false, defaultValue = "TUTTE")List<String> categorie,
             @RequestParam(defaultValue = "50") int maxRisultati
 
     ){
