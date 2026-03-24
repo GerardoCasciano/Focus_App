@@ -1,6 +1,6 @@
 package focusApp.focus.controllers;
 
-import ai.djl.modality.cv.Image;
+
 import focusApp.focus.exceptions.BadRequestException;
 import focusApp.focus.payloads.SegnalazioneMappaDTO;
 import focusApp.focus.repositroy.SegnalazioneUrbanaRepository;
@@ -15,10 +15,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.locationtech.jts.geom.GeometryFactory;
-import org.springframework.web.multipart.MultipartFile;
+import focusApp.focus.entities.SegnalazioneUrbana;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/mappa")
@@ -30,6 +32,16 @@ public class SegnalazioniPerMappaController {
     private  final SegnalazioneUrbanaRepository segnalazioneUrbanaRepository;
 private final GeometryFactory geometryFactory;
 private final SegnalazioneService segnalazioneService;
+
+@GetMapping("/dettaglio/{id}")
+@PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<SegnalazioneUrbana>getDettagliSegnalazione(@PathVariable UUID id){
+    System.out.println("Admin richiede il dettaglio della segnalazione ID " + id);
+  return  segnalazioneUrbanaRepository.findById(id)
+          .map(ResponseEntity::ok)
+          .orElse(ResponseEntity.notFound().build());
+}
+
 
     @GetMapping("/segnalazioni")
     public ResponseEntity<List<SegnalazioneMappaDTO>> getSegnalazioni(
@@ -51,7 +63,7 @@ private final SegnalazioneService segnalazioneService;
     public ResponseEntity<List<SegnalazioneMappaDTO>> getSegnalazioniVicine(
             @RequestParam(required = false)Double lat,
             @RequestParam(required = false)Double lon,
-            @RequestParam(defaultValue = "1000") Double raggio,
+            @RequestParam(defaultValue = "5000") Double raggio,
             @RequestParam (required = false, defaultValue = "TUTTE")List<String> categorie,
             @RequestParam(defaultValue = "50") int maxRisultati
 
@@ -59,7 +71,7 @@ private final SegnalazioneService segnalazioneService;
         System.out.println("Ricerca punti vicini");
 
         //Validazione coordinate
-        if(Math.abs(lat) > 90 || Math.abs(lon) > 180){
+        if(lat == null || lon == null){
             System.out.println("Richiesta fallita fuori dal range (Lat: " + lat + ", lon" + lon + ")");
             throw  new BadRequestException("Coordinate GPS non valide");
         }

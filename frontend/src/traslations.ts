@@ -6,7 +6,8 @@ export const FORM_TRANSLATIONS: Record<string, any> = {
     go: " PORTAMI QUI",
     username: "Nome Utente",
     language: "Lingua",
-    register: "REGISTRATI"
+    register: "REGISTRATI",
+    scanner: "SCANNER"
   },
   EN: {
     loading: "LOADING...",
@@ -15,7 +16,8 @@ export const FORM_TRANSLATIONS: Record<string, any> = {
     go: " GO HERE",
     username: "Username",
     language: "Language",
-    register: "REGISTER"
+    register: "REGISTER",
+    scanner: "SCANNER"
   },
   FR: {
     loading: "CHARGEMENT...",
@@ -24,7 +26,8 @@ export const FORM_TRANSLATIONS: Record<string, any> = {
     go: " ALLER ICI",
     username: "Nom d'utilisateur",
     language: "Langue",
-    register: "S'INSCRIRE"
+    register: "S'INSCRIRE",
+    scanner: "SCANNER"
   },
   ES: {
     loading: "CARGANDO...",
@@ -33,7 +36,8 @@ export const FORM_TRANSLATIONS: Record<string, any> = {
     go: " IR AQUÍ",
     username: "Nombre de usuario",
     language: "Idioma",
-    register: "REGISTRARSE"
+    register: "REGISTRARSE",
+    scanner: "SCANNER"
   },
   ZH: {
     loading: "加载中...",
@@ -42,7 +46,8 @@ export const FORM_TRANSLATIONS: Record<string, any> = {
     go: " 去这里",
     username: "用户名",
     language: "语言",
-    register: "注册"
+    register: "注册",
+    scanner: "扫描器"
   },
   JA: {
     loading: "読み込み中...",
@@ -51,6 +56,7 @@ export const FORM_TRANSLATIONS: Record<string, any> = {
     go: " ここに行く",
     username: "ユーザー名",
     language: "言語",
-    register: "登録"
+    register: "登録",
+    scanner: "スキャナー"
   }
 };

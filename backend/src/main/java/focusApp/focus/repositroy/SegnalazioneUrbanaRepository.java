@@ -14,7 +14,10 @@ import java.util.UUID;
 
 @Repository
 public interface SegnalazioneUrbanaRepository extends JpaRepository<SegnalazioneUrbana, UUID> {
-    @Query("SELECT new focusApp.focus.payloads.SegnalazioneMappaDTO(signal.id, signal.posizione, signal.categoria, 'ATTIVA') " +
+    @Query("SELECT signal.id as id, " +
+            "signal.nomeProposto as nomeProposto, " +
+            "signal.categoria as categoria, " +
+            "signal.posizione as posizione " +
             "FROM SegnalazioneUrbana signal " +
             "WHERE ST_DistanceSphere(signal.posizione, :utentePos) <= :raggio " +
             "AND signal.categoria IN :categorie " +

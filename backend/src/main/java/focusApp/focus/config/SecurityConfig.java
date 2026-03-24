@@ -21,8 +21,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
       http
               .csrf(csrf -> csrf.disable())
+              .cors(Customizer.withDefaults())
               .authorizeHttpRequests(auth-> auth
                               .requestMatchers("/api/auth/**").permitAll()
+                              .requestMatchers("api/mappa/**").permitAll()
+                              .requestMatchers("/api/mappa/dettaglio/**").permitAll()
                               .requestMatchers("/api/focus/analizza").permitAll()
                               .requestMatchers("/api/focus/segnala").hasAnyRole("USER", "ADMIN")
                               .requestMatchers("/api/admin/**").hasRole("ADMIN")

@@ -5,7 +5,16 @@ import { FORM_TRANSLATIONS } from "../traslations";
 import CameraView from "./CameraView";
 
 // componente scanner
-export const Scanner: React.FC<{ currentLang: string }> = ({ currentLang }) => {
+interface ScannerProps {
+  target: any;
+  onClose: () => void;
+  currentLang: string;
+}
+export const Scanner: React.FC<ScannerProps> = ({
+  target,
+  onClose,
+  currentLang,
+}) => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<{ title: string; desc: string } | null>(
     null,
@@ -75,6 +84,7 @@ export const Scanner: React.FC<{ currentLang: string }> = ({ currentLang }) => {
       handleImageCapture(fakeImage);
     }, 1200);
   };
+  console.log("Scanner attivato", target?.nome);
   return (
     <div
       className="scanner-container"

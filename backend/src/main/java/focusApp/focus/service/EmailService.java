@@ -1,8 +1,7 @@
 package focusApp.focus.service;
-
 import focusApp.focus.entities.Utente;
 import lombok.RequiredArgsConstructor;
-
+import focusApp.focus.entities.SegnalazioneUrbana;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class EmailService {
     private final JavaMailSender mailSender;
+
     //invia email con ,link che punta al frontend
 
     public void sendConfirmationEmail(Utente utente){
@@ -67,5 +67,32 @@ public class EmailService {
         }catch (Exception exception){
             System.out.println("ERRORE CRITICO: Fallimento invio ALERT Admin: " + exception.getMessage());
         }
+        }
+        public void sendApprovalToAdmin(SegnalazioneUrbana segnalazioneUrbana){
+        try{
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo("gerrycasciano88@gmail.com");
+            message.setSubject("FOCUS: Nuova Segnalazione da Revisionare [" + segnalazioneUrbana.getNomeProposto() + "]");
+
+            //revisione per react
+            String urlRevisione = "http://localhost:5173/admin/review/" + segnalazioneUrbana.getId();
+           StringBuilder stringBuilder = new StringBuilder();
+           stringBuilder.append("\"Gentile Amministratore,\n\n");
+           stringBuilder.append("È stata inserita una nuova segnalazione che richiede la tua attenzione:\n\n");
+           stringBuilder.append(" NOME: ").append(segnalazioneUrbana.getNomeProposto()).append("\n");
+           stringBuilder.append(" CATEGORIA: ").append(segnalazioneUrbana.getCategoria()).append("\n");
+           stringBuilder.append("ID SEGNALAZIONE: ").append(segnalazioneUrbana.getId()).append("\n");
+           stringBuilder.append("Data").append(new java.util.Date()).append("\n");
+            stringBuilder.append(" Link per la revisione:\n").append(urlRevisione).append("\n\n");
+           stringBuilder.append(urlRevisione).append("\n\n");stringBuilder.append("L'accesso è consentito solo agli utenti con ruolo ADMIN.");
+
+          message.setText(stringBuilder.toString());
+           mailSender.send(message);
+           System.out.println("Richiesta revisione inviata " + segnalazioneUrbana.getNomeProposto());
+
+        }catch(Exception exception){
+            System.out.println("Errore invio mail per la revisione" + exception.getMessage());
+        }
+
         }
 }

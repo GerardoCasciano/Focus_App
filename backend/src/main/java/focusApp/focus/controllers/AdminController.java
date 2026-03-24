@@ -30,6 +30,7 @@ public class AdminController {
             return ResponseEntity.status(500).body("errore imprevisto: " + exception.getMessage());
         }
     }
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/rifiuta/{id}")
     public ResponseEntity<String> rifiutaSegnalazione(@PathVariable UUID id){
         try{

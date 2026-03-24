@@ -26,9 +26,9 @@ public class Utente {
     private String password;
     @Column(name = "lingua_preferita", length = 5)
     private String linguaPreferita = "it";
-    //Serve la conferma della email per la attivazione
+
     private UUID activationToken;
-    private boolean isAttivo = false;
+    private boolean isAttivo = true;
     @Enumerated(EnumType.STRING)
     private RuoloUtente ruolo;
     @OneToMany(mappedBy =  "utente", cascade= CascadeType.ALL)

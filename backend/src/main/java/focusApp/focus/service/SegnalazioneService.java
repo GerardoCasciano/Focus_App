@@ -26,6 +26,7 @@ public class SegnalazioneService {
     private final ElementoUrbanoRepository elementoUrbanoRepository;
     private final CloudinaryService cloudinaryService;
     private final GeometryFactory geometryFactory;
+    private final EmailService emailService;
 @Transactional
 public void approvaSegnalazione(UUID segnalazioneId){
     //recupero della segnalazione
@@ -64,11 +65,15 @@ public void approvaSegnalazione(UUID segnalazioneId){
     @Transactional
     public void salvaSegnalazione(focusApp.focus.payloads.SegnalazioneMappaDTO dto,  org.springframework.web.multipart.MultipartFile file)throws java.io.IOException{
     String urlCaricato = cloudinaryService.uploadImage(file);
+
     focusApp.focus.entities.SegnalazioneUrbana nuova = new focusApp.focus.entities.SegnalazioneUrbana();
       nuova.setNomeProposto(dto.getNomeProposto());
      nuova.setCategoria(dto.getCategoria());
      nuova.setUrlImmagineRiferimento(urlCaricato);
      nuova.setStato(StatoSegnalazione.IN_ATTESA);
+        repository.save(nuova);
+        emailService.sendApprovalToAdmin(nuova);
+        System.out.println("Segnalazione salvata e notifica inviata!");
 
      org.locationtech.jts.geom.Point posizione = geometryFactory.createPoint(
          new org.locationtech.jts.geom.Coordinate(dto.getLon(), dto.getLat())
