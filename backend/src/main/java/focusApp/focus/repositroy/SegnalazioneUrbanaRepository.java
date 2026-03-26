@@ -19,13 +19,14 @@ public interface SegnalazioneUrbanaRepository extends JpaRepository<Segnalazione
             "signal.categoria as categoria, " +
             "signal.posizione as posizione " +
             "FROM segnalazione_urbana signal " +
-            "WHERE ST_DistanceSphere(signal.posizione, :utentePos) <= :raggio " +
+            "WHERE ST_DistanceSphere(signal.posizione, ST_SetSRID(ST_MakePoint(:lon, :lat), 4326)) <= :raggio " +
             "AND signal.categoria IN :categorie " +
-            "AND signal.stato = 'IN_ATTESA'",
+            "AND signal.stato IN ('IN_ATTESA', 'APPROVATO')",
             nativeQuery = true)
 
     List<SegnalazioneMappaDTO> findVicine(
-            @Param("utentePos") Point utentePos,
+            @Param("lat") Double lat,
+            @Param("lon")Double lon,
             @Param("raggio") Double raggio,
             @Param("categorie") List<String>categorie,
            org.springframework.data.domain.Pageable pageable

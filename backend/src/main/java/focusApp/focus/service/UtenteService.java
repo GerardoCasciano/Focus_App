@@ -47,8 +47,8 @@ public class UtenteService {
         String passwordCriptata = passwordEncoder.encode(nuovoUtente.getPassword());
         nuovoUtente.setPassword(passwordCriptata);
 
-        nuovoUtente.setAttivo(false);
-        nuovoUtente.setActivationToken(UUID.randomUUID());
+        nuovoUtente.setAttivo(true);
+        nuovoUtente.setActivationToken(null);
         System.out.println("Salvataggio nuovo utente: " + nuovoUtente.getEmail());
         return utenteRepository.save(nuovoUtente);
     }

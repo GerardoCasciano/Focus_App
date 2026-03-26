@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -25,10 +26,15 @@ public class JwtFilter extends OncePerRequestFilter {
     private final CustomUserService userDetailsService;
     private final BlacklistService blacklistService;
 
+@Override
+ protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException{
+    return new AntPathMatcher().match("/api/auth/**", request.getServletPath());
+}
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String header = request.getHeader("Authorization");
         System.out.println("Debug: Header ricevuto" + header);
+        System.out.println("Richiesta ricevuta su: " + request.getServletPath());
 
         if(header != null && header.startsWith("Bearer ")){
             String token = header.substring(7);
@@ -40,17 +46,17 @@ public class JwtFilter extends OncePerRequestFilter {
                 return;
             }
             if (jwtUtils.validateToken(token)){
-                String username = jwtUtils.getUsernameFromToken(token);
-                System.out.println("Debug: Token valido per utente" + username);
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                String email = jwtUtils.getUsernameFromToken(token);
+                System.out.println("Debug: Token valido per utente" + email);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities()
                 );
                 SecurityContextHolder.getContext().setAuthentication(auth);
-                System.out.println("Debug: Autenticazione imposta");
+                System.out.println("Debug: Autenticazione impostata");
             }else  {
-                System.out.println("Debug: Validazionie fallita in JwtUtils!");
+                System.out.println("Debug: Validazione fallita in JwtUtils!");
             }
         }
         filterChain.doFilter(request, response);

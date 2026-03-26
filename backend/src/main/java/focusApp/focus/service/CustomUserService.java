@@ -17,12 +17,16 @@ import java.util.Collections;
 public class CustomUserService implements UserDetailsService {
     private final UtenteRepository utenteRepository;
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
-       Utente utente = utenteRepository.findByUsername(username)
-               .orElseThrow(() -> new UsernameNotFoundException("Utente non trovato:" + username));
-
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException{
+        System.out.println("DEBUG: Spring Security sta cercando l'utente con email: [" + email + "]");
+       Utente utente = utenteRepository.findByEmail(email)
+       .orElseThrow(() ->{
+           System.err.println("DEBUG: L'email [" + email + "] NON è stata trovata nel database!");
+             return  new UsernameNotFoundException("Utente non trovato:" + email);
+       });
+        System.out.println("DEBUG: Utente trovato! Procedo al controllo password per: " + utente.getEmail());
        return new User(
-               utente.getUsername(),
+               utente.getEmail(),
                utente.getPassword(),
                Collections.singletonList(new SimpleGrantedAuthority(utente.getRuolo().name()))
        );

@@ -6,14 +6,15 @@ import Loader from "./Loader";
 import { FORM_TRANSLATIONS } from "../traslations";
 import "../assets/MapFeature.css";
 interface ElementoUrbano {
-  id: number;
-  nome: string;
-  latitudine: number;
-  longitudine: number;
+  id: string;
+  nomeProposto: string;
+  lat: number;
+  lon: number;
   tipo: string;
   descrizione: string;
-  fotoUrl: string;
+
   categoria: string;
+  urlImmagineRiferimento: string;
 }
 
 interface MapProps {
@@ -59,7 +60,18 @@ export const MapFeature: React.FC<MapProps> = ({ currentLang }) => {
           "categorie",
           "MONUMENTO,CHIESA,STORIA,CIMITERI_STORICI",
         );
-        const response = await fetch(url.toString());
+        // recupero del token
+        const token =
+          localStorage.getItem("accessToken") || localStorage.getItem("token");
+        console.log("DEBUG Token", token);
+        const response = await fetch(url.toString(), {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
         if (!response.ok) throw new Error("Errore risposta server");
         const data = await response.json();
         setElementi(data);
@@ -84,20 +96,20 @@ export const MapFeature: React.FC<MapProps> = ({ currentLang }) => {
   }
   return (
     <div className="map-page">
-      {loading && <Loader message={FORM_TRANSLATIONS[currentLang]} />}
+      {loading && <Loader message={FORM_TRANSLATIONS[currentLang].loading} />}
       <div className="map-canvas">
         {!loading &&
           userPos &&
-          elementi.map((elementi) => (
+          elementi.map((el) => (
             <div
-              key={elementi.id}
+              key={el.id}
               className="focus-marker"
-              onClick={() => setSelectElemento(elementi)}
+              onClick={() => setSelectElemento(el)}
               style={{
                 position: "absolute",
 
-                left: `${50 + (elementi.longitudine - userPos.lon) * 5000}%`,
-                top: `${50 - (elementi.latitudine - userPos.lat) * 5000}%`,
+                left: `${50 + (el.lon - userPos.lon) * 5000}%`,
+                top: `${50 - (el.lat - userPos.lat) * 5000}%`,
                 transform: "translate(-50%, -50%)",
               }}
             >
@@ -110,7 +122,7 @@ export const MapFeature: React.FC<MapProps> = ({ currentLang }) => {
         {selectElemento && (
           <MonumentCard
             data={{
-              title: selectElemento,
+              title: selectElemento.nomeProposto,
               desc: selectElemento.descrizione,
             }}
             onClose={() => setSelectElemento(null)}

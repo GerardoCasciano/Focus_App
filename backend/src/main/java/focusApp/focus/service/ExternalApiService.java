@@ -58,8 +58,8 @@ public class ExternalApiService {
         ElementoUrbano nuovoMonumento = new ElementoUrbano();
         nuovoMonumento.setOsmId(element.id());
         nuovoMonumento.setNome(element.tags().get("name"));
-        nuovoMonumento.setLatitudine(element.lat());
-        nuovoMonumento.setLongitudine(element.lon());
+        nuovoMonumento.setLat(element.lat());
+        nuovoMonumento.setLon(element.lon());
         nuovoMonumento.setTipo("STRADA");
         nuovoMonumento.setApprovato(true);
         //Salva nel DB
@@ -74,8 +74,8 @@ public class ExternalApiService {
             ElementoUrbano strada = new ElementoUrbano();
             strada.setOsmId(element.id());
             strada.setNome(element.tags().get("name"));
-            strada.setLatitudine(element.lat());
-            strada.setLongitudine(element.lon());
+            strada.setLat(element.lat());
+            strada.setLon(element.lon());
             strada.setTipo("STRADA");
             strada.setApprovato(true);
             repository.save(strada);

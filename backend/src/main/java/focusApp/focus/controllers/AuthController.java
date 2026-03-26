@@ -3,7 +3,11 @@ package focusApp.focus.controllers;
 import focusApp.focus.config.JwtUtils;
 import focusApp.focus.entities.RuoloUtente;
 import focusApp.focus.entities.Utente;
+import focusApp.focus.exceptions.UnauthorizedException;
+import focusApp.focus.payloads.LoginResponseDTO;
+import focusApp.focus.payloads.UtenteLoginDTO;
 import focusApp.focus.repositroy.UtenteRepository;
+import focusApp.focus.service.AuthService;
 import focusApp.focus.service.BlacklistService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,7 +32,7 @@ public class AuthController {
     private final JwtUtils jwtUtils;
     private final BlacklistService blacklistService;
     private final EmailService emailService;
-
+   private final AuthService authService;
     //Registrazione: protegge i dati e invia email di conferma
 
     @PostMapping("/register")
@@ -100,28 +104,16 @@ public class AuthController {
 
     // Login: Genera un nuovo token
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(@RequestBody UtenteLoginDTO body) {
+    try{
+        LoginResponseDTO response = authService.authenticateUtenteAndGenerateToken(body);
 
-        System.out.println("Login fallito: username non trovato");
-        Utente utente = utenteRepository.findByUsername(request.getUsername()).orElse(null);
-        if (utente == null) {
-            System.out.println("Login fallito:username non trovato.");
-            return ResponseEntity.status(401).body("⚠️Credenziali errate");
-        }
-        if (!utente.isAttivo()) {
-            return ResponseEntity.status(403).body("⚠️Devi prima attivare l'account tramite l'email che ti abbiamo inviato");
-        }
-
-        if (!passwordEncoder.matches(request.getPassword(), utente.getPassword())) {
-            System.out.println("Login fallito: password errata");
-            return ResponseEntity.status(401).body("Credenziali errate.");
-
-        }
-
-        //se è Ok genra il jwt
-        String token = jwtUtils.generateToken(utente);
-        System.out.println("login completato per" + utente.getUsername());
-        return ResponseEntity.ok(Collections.singletonMap("token", token));
+        System.out.println("login completato : " + body.email());
+        return ResponseEntity.ok(response);
+    }catch (UnauthorizedException exception){
+        System.err.println("Login   fallito: " + exception.getMessage());
+        return   ResponseEntity.status(401).body(exception.getMessage());
+    }
     }
 
 

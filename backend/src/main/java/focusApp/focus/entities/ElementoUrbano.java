@@ -24,8 +24,8 @@ public class ElementoUrbano {
     @Column(unique = true)
     private Long osmId;
     private String nome;
-    private Double latitudine;
-    private Double longitudine;
+    private Double lat;
+    private Double lon;
     private String tipo;
     private String stileArchitettonico;
     private boolean approvato ;

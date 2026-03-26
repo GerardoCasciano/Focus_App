@@ -15,7 +15,7 @@ public class AdminInitializer implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     @Override
     public void run(String... args){
-        if (utenteRepository.findByUsername("admin").isEmpty()){
+        if (utenteRepository.findByEmail("gerrycasciano88@gmail.com").isEmpty()){
             Utente admin= new  Utente();
             admin.setUsername("admin");
             admin.setPassword(passwordEncoder.encode("focus"));
@@ -25,6 +25,12 @@ public class AdminInitializer implements CommandLineRunner {
 
             utenteRepository.save(admin);
             System.out.println("DB Inizializzato: creato utente ADMIN");
+        }else{
+            Utente esistente = utenteRepository.findByEmail("gerrycasciano88@gmail.com").get();
+           esistente.setPassword(passwordEncoder.encode("focus"));
+            esistente.setAttivo(true);
+            utenteRepository.save(esistente);
+            System.out.println("password aggiornata ");
         }
     }
 }

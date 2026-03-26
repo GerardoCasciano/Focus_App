@@ -81,7 +81,7 @@ private final SegnalazioneService segnalazioneService;
             Point utentePos = geometryFactory.createPoint(new Coordinate(lon, lat));
             utentePos.setSRID(4326);
           Pageable limite = PageRequest.of(0, maxRisultati);
-            List<SegnalazioneMappaDTO> vicine= segnalazioneUrbanaRepository.findVicine(utentePos, raggio, categorie,limite);
+            List<SegnalazioneMappaDTO> vicine= segnalazioneUrbanaRepository.findVicine(lat, lon, raggio, categorie,limite);
             System.err.println("Trovate " + vicine.size() + "segnalazioni nel raggio di " + raggio + "metri");
             return  ResponseEntity.ok(vicine);
         }catch(Exception exception){

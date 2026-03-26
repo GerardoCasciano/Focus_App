@@ -11,8 +11,8 @@ public interface SegnalazioneMappaDTO {
     String getCategoria();
     String getUrlImmagineRiferimento();
 
-    @Value("#{target.posizione.getY()}")
+
     Double getLat();
-    @Value("#{target.posizione.getX()}")
+
     Double getLon();
 }

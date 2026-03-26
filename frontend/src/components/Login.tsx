@@ -27,11 +27,13 @@ export const Login: React.FC = () => {
       const response = await fetch("http://localhost:8080/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email: email, password: password }),
+        credentials: "include",
       });
       if (response.ok) {
         const data = await response.json();
         localStorage.setItem("token", data.accessToken);
+        localStorage.setItem("refreshToken", data.refreshtoken);
         alert("Login effettuato con successo!");
         navigate("/mappa");
       } else {
