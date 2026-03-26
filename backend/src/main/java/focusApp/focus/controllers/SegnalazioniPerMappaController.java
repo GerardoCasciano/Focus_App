@@ -76,9 +76,11 @@ private final SegnalazioneService segnalazioneService;
             throw  new BadRequestException("Coordinate GPS non valide");
         }
         try{
+
             // Creazione Dinamica dei punti
             Point utentePos = geometryFactory.createPoint(new Coordinate(lon, lat));
-            org.springframework.data.domain.Pageable limite = org.springframework.data.domain.PageRequest.of(0, maxRisultati);
+            utentePos.setSRID(4326);
+          Pageable limite = PageRequest.of(0, maxRisultati);
             List<SegnalazioneMappaDTO> vicine= segnalazioneUrbanaRepository.findVicine(utentePos, raggio, categorie,limite);
             System.err.println("Trovate " + vicine.size() + "segnalazioni nel raggio di " + raggio + "metri");
             return  ResponseEntity.ok(vicine);

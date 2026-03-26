@@ -56,7 +56,7 @@ const AdminReviewPage: React.FC = () => {
         {
           method: "POST",
           headers: {
-            Authorizaton: `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
         },

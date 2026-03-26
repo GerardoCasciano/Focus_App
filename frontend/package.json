@@ -11,13 +11,16 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@types/react-router-dom": "^5.3.3",
     "axios": "^1.6.0",
     "bootstrap": "^5.3.2",
+    "bootstrap-icons": "^1.13.1",
     "leaflet": "^1.9.4",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.0",
     "react-dom": "^18.2.0",
     "react-leaflet": "^4.2.1",
+    "react-router-dom": "^6.30.3",
     "react-webcam": "^7.2.0"
   },
   "devDependencies": {

@@ -14,14 +14,15 @@ import java.util.UUID;
 
 @Repository
 public interface SegnalazioneUrbanaRepository extends JpaRepository<SegnalazioneUrbana, UUID> {
-    @Query("SELECT signal.id as id, " +
-            "signal.nomeProposto as nomeProposto, " +
+    @Query(value = "SELECT signal.id as id, " +
+            "signal.nome_proposto as nomeProposto, " +
             "signal.categoria as categoria, " +
             "signal.posizione as posizione " +
-            "FROM SegnalazioneUrbana signal " +
+            "FROM segnalazione_urbana signal " +
             "WHERE ST_DistanceSphere(signal.posizione, :utentePos) <= :raggio " +
             "AND signal.categoria IN :categorie " +
-            "AND signal.stato = 'IN_ATTESA'")
+            "AND signal.stato = 'IN_ATTESA'",
+            nativeQuery = true)
 
     List<SegnalazioneMappaDTO> findVicine(
             @Param("utentePos") Point utentePos,
