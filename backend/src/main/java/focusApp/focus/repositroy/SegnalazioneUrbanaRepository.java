@@ -2,7 +2,7 @@ package focusApp.focus.repositroy;
 
 import focusApp.focus.entities.SegnalazioneUrbana;
 import focusApp.focus.payloads.SegnalazioneMappaDTO;
-import org.locationtech.jts.geom.Point;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,16 +13,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface SegnalazioneUrbanaRepository extends JpaRepository<SegnalazioneUrbana, UUID> {
-    @Query(value = "SELECT signal.id as id, " +
-            "signal.nome_proposto as nomeProposto, " +
-            "signal.categoria as categoria, " +
-            "signal.posizione as posizione " +
-            "FROM segnalazione_urbana signal " +
-            "WHERE ST_DistanceSphere(signal.posizione, ST_SetSRID(ST_MakePoint(:lon, :lat), 4326)) <= :raggio " +
-            "AND signal.categoria IN :categorie " +
-            "AND signal.stato IN ('IN_ATTESA', 'APPROVATO')",
-            nativeQuery = true)
+public interface SegnalazioneUrbanaRepository extends JpaRepository<SegnalazioneUrbana, UUID> {@Query("SELECT new focusApp.focus.payloads.SegnalazioneMappaDTO(" +
+        "segnalazione.id, segnalazione.nomeProposto, segnalazione.descrizione, segnalazione.categoria, " +
+        "ST_Y(segnalazione.posizione.y), ST_X(segnalazione.posizione.x)) " +
+        "FROM SegnalazioneUrbana segnalazione WHERE ...")
+
 
     List<SegnalazioneMappaDTO> findVicine(
             @Param("lat") Double lat,
@@ -32,10 +27,14 @@ public interface SegnalazioneUrbanaRepository extends JpaRepository<Segnalazione
            org.springframework.data.domain.Pageable pageable
     );
     //Recupera tutte le segnalazioni attive per la mappa globale
-    @Query("SELECT new focusApp.focus.payloads.SegnalazioneMappaDTO(signal.id, signal.posizione, signal.categoria, 'ATTIVA') " +
-            "FROM SegnalazioneUrbana signal")
-    List<SegnalazioneMappaDTO> findAllProjected(org.springframework.data.domain.Pageable pageable);
-
+    @Query("SELECT new focusApp.focus.payloads.SegnalazioneMappaDTO(" +
+            "segnalazione.id, segnalazione.nomeProposto, segnalazione.categoria, segnalazione.urlImmagineRiferimento, segnalazione.descrizione, " +
+            "function('ST_Y', segnalazione.posizione.y), function('ST_X', segnalazione.posizione.x)) " +
+            "FROM SegnalazioneUrbana segnalazione")
+    List<SegnalazioneMappaDTO> findAllProjected(org.springframework.data.domain.Pageable pageable);@Query("SELECT new focusApp.focus.payloads.SegnalazioneMappaDTO(" +
+            "segnalazione.id, segnalazione.nomeProposto, segnalazione.categoria, segnalazione.urlImmagineRiferimento, segnalazione.descrizione, " +
+            "function('ST_Y', segnalazione.posizione.y), function('ST_X', segnalazione.posizione.x )) " +
+            "FROM SegnalazioneUrbana segnalazione")
     //Metodo per Admin, trova solo quelle da revisionare
     List<SegnalazioneUrbana> findByStato(String stato);
 }

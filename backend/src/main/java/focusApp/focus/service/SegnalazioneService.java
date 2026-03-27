@@ -67,8 +67,8 @@ public void approvaSegnalazione(UUID segnalazioneId){
     String urlCaricato = cloudinaryService.uploadImage(file);
 
     focusApp.focus.entities.SegnalazioneUrbana nuova = new focusApp.focus.entities.SegnalazioneUrbana();
-      nuova.setNomeProposto(dto.getNomeProposto());
-     nuova.setCategoria(dto.getCategoria());
+      nuova.setNomeProposto(dto.nomeProposto());
+     nuova.setCategoria(dto.categoria());
      nuova.setUrlImmagineRiferimento(urlCaricato);
      nuova.setStato(StatoSegnalazione.IN_ATTESA);
         repository.save(nuova);
@@ -76,11 +76,11 @@ public void approvaSegnalazione(UUID segnalazioneId){
         System.out.println("Segnalazione salvata e notifica inviata!");
 
      org.locationtech.jts.geom.Point posizione = geometryFactory.createPoint(
-         new org.locationtech.jts.geom.Coordinate(dto.getLon(), dto.getLat())
+         new org.locationtech.jts.geom.Coordinate(dto.lon(), dto.lat())
              );
      posizione.setSRID(4326);
      nuova.setPosizione(posizione);
      repository.save(nuova);
-     System.out.println("Segnalazione salvata con successo per: " + dto.getNomeProposto());
+     System.out.println("Segnalazione salvata con successo per: " + dto.nomeProposto());
     }
 }

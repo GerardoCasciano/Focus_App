@@ -60,6 +60,7 @@ private final SegnalazioneService segnalazioneService;
         }
     }
     @GetMapping("/vicine")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<List<SegnalazioneMappaDTO>> getSegnalazioniVicine(
             @RequestParam(required = false)Double lat,
             @RequestParam(required = false)Double lon,

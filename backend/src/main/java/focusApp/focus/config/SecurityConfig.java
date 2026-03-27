@@ -35,6 +35,7 @@ public class SecurityConfig {
                               .requestMatchers("/api/focus/analizza").permitAll()
                               .requestMatchers("/api/focus/segnalazioni").hasAnyRole("USER", "ADMIN")
                               .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                              .requestMatchers("/error").permitAll()
                               .anyRequest().authenticated()
                       )
               .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

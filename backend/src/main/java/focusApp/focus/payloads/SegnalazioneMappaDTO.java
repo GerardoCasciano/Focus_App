@@ -1,18 +1,15 @@
 package focusApp.focus.payloads;
 
 
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.UUID;
 
-public interface SegnalazioneMappaDTO {
-    UUID getId();
-    String getNomeProposto();
-    String getCategoria();
-    String getUrlImmagineRiferimento();
-
-
-    Double getLat();
-
-    Double getLon();
-}
+public record SegnalazioneMappaDTO(
+        UUID id,
+        String nomeProposto,
+        String categoria,
+        String urlImmagineRiferimento,
+        String descrizione,
+       Double lat,
+        Double lon
+) {}
