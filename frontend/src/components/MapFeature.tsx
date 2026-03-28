@@ -1,10 +1,22 @@
 import React, { useEffect, useState } from "react";
-
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import L from "leaflet";
 import { MonumentCard } from "./MonumentCard";
 import { Scanner } from "./Scanner";
 import Loader from "./Loader";
 import { FORM_TRANSLATIONS } from "../traslations";
+import "leaflet/dist/leaflet.css";
 import "../assets/MapFeature.css";
+
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+
+const focuIcon = L.icon({
+  iconUrl: "/foculogo.png",
+  iconSize: [40, 40],
+  iconAnchor: [20, 40],
+  popupAnchor: [0, -40],
+});
+
 interface ElementoUrbano {
   id: string;
   nomeProposto: string;
@@ -12,7 +24,6 @@ interface ElementoUrbano {
   lon: number;
   tipo: string;
   descrizione: string;
-
   categoria: string;
   urlImmagineRiferimento: string;
 }
@@ -20,38 +31,57 @@ interface ElementoUrbano {
 interface MapProps {
   currentLang: string;
 }
+// componente per centrare la mappa sull'utente
+const CenterUser: React.FC<{ lat: number; lon: number }> = ({ lat, lon }) => {
+  const map = useMap();
+  useEffect(() => {
+    map.setView([lat, lon], 15);
+  }, [lat, lon]);
+  return null;
+};
 
 export const MapFeature: React.FC<MapProps> = ({ currentLang }) => {
   const [elementi, setElementi] = useState<ElementoUrbano[]>([]);
   const [selectElemento, setSelectElemento] = useState<ElementoUrbano | null>(
     null,
   );
-  const [loading, setLoading] = useState(true);
+
+  const [loadingGps, setLoadingGps] = useState(true);
+  const [loadingDati, setLoadingDati] = useState(false);
   const [userPos, setUserPos] = useState<{ lat: number; lon: number } | null>(
     null,
   );
   const [isScannerOpen, setIsScannerOpen] = useState(false);
-  // recupero pos gps
+
   useEffect(() => {
+    console.log("GPS useEffect avviato");
     navigator.geolocation.getCurrentPosition(
       (position) => {
+        console.log(
+          "GPS ok:",
+          position.coords.latitude,
+          position.coords.longitude,
+        );
         setUserPos({
           lat: position.coords.latitude,
           lon: position.coords.longitude,
         });
+        setLoadingGps(false);
       },
-      (error) => console.error("Errore GPS:", error),
-      { enableHighAccuracy: true },
+      (error) => {
+        console.error("Errore GPS:", error);
+
+        setLoadingGps(false);
+      },
+      { enableHighAccuracy: true, timeout: 5000 },
     );
   }, []);
 
-  // chiamata controller (vicine)
   useEffect(() => {
     if (!userPos) return;
-
     const fetchVicine = async () => {
       try {
-        setLoading(true);
+        setLoadingDati(true);
         const url = new URL("http://localhost:8080/api/mappa/vicine");
         url.searchParams.append("lat", userPos.lat.toString());
         url.searchParams.append("lon", userPos.lon.toString());
@@ -60,10 +90,9 @@ export const MapFeature: React.FC<MapProps> = ({ currentLang }) => {
           "categorie",
           "MONUMENTO,CHIESA,STORIA,CIMITERI_STORICI",
         );
-        // recupero del token
+
         const token =
           localStorage.getItem("accessToken") || localStorage.getItem("token");
-        console.log("DEBUG Token", token);
         const response = await fetch(url.toString(), {
           method: "GET",
           headers: {
@@ -76,15 +105,14 @@ export const MapFeature: React.FC<MapProps> = ({ currentLang }) => {
         const data = await response.json();
         setElementi(data);
       } catch (error) {
-        console.error("Errore recpero segnalazioni:", error);
+        console.error("Errore recupero segnalazioni:", error);
       } finally {
-        setLoading(false);
+        setLoadingDati(false);
       }
     };
     fetchVicine();
   }, [userPos]);
 
-  // gestione dello scanner
   if (isScannerOpen) {
     return (
       <Scanner
@@ -94,44 +122,77 @@ export const MapFeature: React.FC<MapProps> = ({ currentLang }) => {
       />
     );
   }
+
   return (
     <div className="map-page">
-      {loading && <Loader message={FORM_TRANSLATIONS[currentLang].loading} />}
-      <div className="map-canvas">
-        {!loading &&
-          userPos &&
-          elementi.map((el) => (
-            <div
-              key={el.id}
-              className="focus-marker"
-              onClick={() => setSelectElemento(el)}
-              style={{
-                position: "absolute",
-
-                left: `${50 + (el.lon - userPos.lon) * 5000}%`,
-                top: `${50 - (el.lat - userPos.lat) * 5000}%`,
-                transform: "translate(-50%, -50%)",
-              }}
-            >
-              <div className="marker">
-                <img src="public\foculogo.png" alt="logo" />
-              </div>
-            </div>
-          ))}
-        {/* mostra la card al select dell'elemento  */}
-        {selectElemento && (
-          <MonumentCard
-            data={{
-              title: selectElemento.nomeProposto,
-              desc: selectElemento.descrizione,
-            }}
-            onClose={() => setSelectElemento(null)}
-            onOpenScanner={() => setIsScannerOpen(true)}
-            currentLang={currentLang}
+      {loadingGps && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "column",
+            backgroundColor: "#1b1b1b",
+            color: "#fff",
+            fontSize: "1.2rem",
+            zIndex: 9999,
+            gap: "16px",
+          }}
+        >
+          <div style={{ fontSize: "2rem" }}>{<Loader />}</div>
+        </div>
+      )}
+      {loadingDati && (
+        <Loader message={FORM_TRANSLATIONS[currentLang].loading} />
+      )}
+      {loadingGps && userPos && (
+        <MapContainer
+          center={[userPos.lat, userPos.lon]}
+          zoom={15}
+          style={{ width: "100%", height: "100%" }}
+        >
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-        )}
-      </div>
+          <CenterUser lat={userPos.lat} lon={userPos.lon} />
+
+          {/* Marker utente  */}
+          <Marker position={[userPos.lat, userPos.lon]}>
+            <Popup>Sei qui</Popup>
+          </Marker>
+
+          {/* Marker dei monumenti  */}
+          {elementi.map((el) => (
+            <Marker
+              key={el.id}
+              position={[el.lat, el.lon]}
+              icon={focuIcon}
+              eventHandlers={{ click: () => setSelectElemento(el) }}
+            >
+              <Popup>{el.nomeProposto}</Popup>
+            </Marker>
+          ))}
+        </MapContainer>
+      )}
+      {selectElemento && (
+        <MonumentCard
+          data={{
+            title: selectElemento.nomeProposto,
+            desc: selectElemento.descrizione,
+          }}
+          onClose={() => setSelectElemento(null)}
+          onOpenScanner={() => setIsScannerOpen(true)}
+          currentLang={currentLang}
+        />
+      )}
     </div>
   );
 };
+
 export default MapFeature;
