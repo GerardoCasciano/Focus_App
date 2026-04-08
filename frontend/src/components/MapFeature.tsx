@@ -10,6 +10,13 @@ import "../assets/MapFeature.css";
 
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 
+const userIcon = L.divIcon({
+  html: "📌",
+  className: "",
+  iconSize: [30, 30],
+  iconAnchor: [15, 30],
+});
+
 const focuIcon = L.icon({
   iconUrl: "/foculogo.png",
   iconSize: [40, 40],
@@ -150,7 +157,7 @@ export const MapFeature: React.FC<MapProps> = ({ currentLang }) => {
       {loadingDati && (
         <Loader message={FORM_TRANSLATIONS[currentLang].loading} />
       )}
-      {loadingGps && userPos && (
+      {!loadingGps && userPos && (
         <MapContainer
           center={[userPos.lat, userPos.lon]}
           zoom={15}
@@ -163,7 +170,7 @@ export const MapFeature: React.FC<MapProps> = ({ currentLang }) => {
           <CenterUser lat={userPos.lat} lon={userPos.lon} />
 
           {/* Marker utente  */}
-          <Marker position={[userPos.lat, userPos.lon]}>
+          <Marker position={[userPos.lat, userPos.lon]} icon={userIcon}>
             <Popup>Sei qui</Popup>
           </Marker>
 
