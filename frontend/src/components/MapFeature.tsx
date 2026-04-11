@@ -1,51 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
-import L from "leaflet";
+
 import { MonumentCard } from "./MonumentCard";
 import { Scanner } from "./Scanner";
 import Loader from "./Loader";
 import { FORM_TRANSLATIONS } from "../traslations";
-import "leaflet/dist/leaflet.css";
-import "../assets/MapFeature.css";
-
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-
-const userIcon = L.divIcon({
-  html: "📌",
-  className: "",
-  iconSize: [30, 30],
-  iconAnchor: [15, 30],
-});
-
-const focuIcon = L.icon({
-  iconUrl: "/foculogo.png",
-  iconSize: [40, 40],
-  iconAnchor: [20, 40],
-  popupAnchor: [0, -40],
-});
-
-interface ElementoUrbano {
-  id: string;
-  nomeProposto: string;
-  lat: number;
-  lon: number;
-  tipo: string;
-  descrizione: string;
-  categoria: string;
-  urlImmagineRiferimento: string;
-}
-
-interface MapProps {
-  currentLang: string;
-}
-// componente per centrare la mappa sull'utente
-const CenterUser: React.FC<{ lat: number; lon: number }> = ({ lat, lon }) => {
-  const map = useMap();
-  useEffect(() => {
-    map.setView([lat, lon], 15);
-  }, [lat, lon]);
-  return null;
-};
+import { userIcon, focuIcon, ElementoUrbano, MapProps } from "../MapConfig";
 
 export const MapFeature: React.FC<MapProps> = ({ currentLang }) => {
   const [elementi, setElementi] = useState<ElementoUrbano[]>([]);
@@ -59,21 +19,24 @@ export const MapFeature: React.FC<MapProps> = ({ currentLang }) => {
     null,
   );
   const [isScannerOpen, setIsScannerOpen] = useState(false);
-
+  const hasFetchedRef = useRef(false);
   useEffect(() => {
     console.log("GPS useEffect avviato");
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        console.log(
-          "GPS ok:",
-          position.coords.latitude,
-          position.coords.longitude,
-        );
-        setUserPos({
-          lat: position.coords.latitude,
-          lon: position.coords.longitude,
-        });
-        setLoadingGps(false);
+        if (!hasFetchedRef.current) {
+          hasFetchedRef.current = true;
+          console.log(
+            "GPS ok:",
+            position.coords.latitude,
+            position.coords.longitude,
+          );
+          setUserPos({
+            lat: position.coords.latitude,
+            lon: position.coords.longitude,
+          });
+          setLoadingGps(false);
+        }
       },
       (error) => {
         console.error("Errore GPS:", error);
@@ -133,45 +96,28 @@ export const MapFeature: React.FC<MapProps> = ({ currentLang }) => {
   return (
     <div className="map-page">
       {loadingGps && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "column",
-            backgroundColor: "#1b1b1b",
-            color: "#fff",
-            fontSize: "1.2rem",
-            zIndex: 9999,
-            gap: "16px",
-          }}
-        >
+        <div className="gps">
           <div style={{ fontSize: "2rem" }}>{<Loader />}</div>
         </div>
       )}
-      {loadingDati && (
+      {loadingDati && !loadingGps && (
         <Loader message={FORM_TRANSLATIONS[currentLang].loading} />
       )}
       {!loadingGps && userPos && (
         <MapContainer
+          key={`mappa-${userPos.lat}-${userPos.lon}`}
           center={[userPos.lat, userPos.lon]}
           zoom={15}
-          style={{ width: "100%", height: "100%" }}
+          style={{ width: "100vw", height: "100vh" }}
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          <CenterUser lat={userPos.lat} lon={userPos.lon} />
 
           {/* Marker utente  */}
           <Marker position={[userPos.lat, userPos.lon]} icon={userIcon}>
-            <Popup>Sei qui</Popup>
+            <Popup> Sei qui</Popup>
           </Marker>
 
           {/* Marker dei monumenti  */}
