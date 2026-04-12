@@ -1,92 +1,45 @@
-import React, { useEffect, useRef, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
-
+import React, { useEffect, useState } from "react";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { Button } from "react-bootstrap";
 import { MonumentCard } from "./MonumentCard";
 import { Scanner } from "./Scanner";
 import Loader from "./Loader";
 import { FORM_TRANSLATIONS } from "../traslations";
+import { getSegnlazioniVicine } from "../api/apiSegnalazioniService";
+import { geoLocalization } from "../hooks/geolocalization";
 import { userIcon, focuIcon, ElementoUrbano, MapProps } from "../MapConfig";
 
 export const MapFeature: React.FC<MapProps> = ({ currentLang }) => {
   const [elementi, setElementi] = useState<ElementoUrbano[]>([]);
-  const [selectElemento, setSelectElemento] = useState<ElementoUrbano | null>(
+  const [selectElemento, setSelecetElemento] = useState<ElementoUrbano | null>(
     null,
   );
-
-  const [loadingGps, setLoadingGps] = useState(true);
   const [loadingDati, setLoadingDati] = useState(false);
-  const [userPos, setUserPos] = useState<{ lat: number; lon: number } | null>(
-    null,
-  );
   const [isScannerOpen, setIsScannerOpen] = useState(false);
-  const hasFetchedRef = useRef(false);
-  useEffect(() => {
-    console.log("GPS useEffect avviato");
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        if (!hasFetchedRef.current) {
-          hasFetchedRef.current = true;
-          console.log(
-            "GPS ok:",
-            position.coords.latitude,
-            position.coords.longitude,
-          );
-          setUserPos({
-            lat: position.coords.latitude,
-            lon: position.coords.longitude,
-          });
-          setLoadingGps(false);
-        }
-      },
-      (error) => {
-        console.error("Errore GPS:", error);
 
-        setLoadingGps(false);
-      },
-      { enableHighAccuracy: true, timeout: 5000 },
-    );
-  }, []);
+  const { userPos, loadingGps } = geoLocalization();
 
   useEffect(() => {
     if (!userPos) return;
-    const fetchVicine = async () => {
+
+    const fetchData = async () => {
       try {
         setLoadingDati(true);
-        const url = new URL("http://localhost:8080/api/mappa/vicine");
-        url.searchParams.append("lat", userPos.lat.toString());
-        url.searchParams.append("lon", userPos.lon.toString());
-        url.searchParams.append("raggio", "5000");
-        url.searchParams.append(
-          "categorie",
-          "MONUMENTO,CHIESA,STORIA,CIMITERI_STORICI",
-        );
-
-        const token =
-          localStorage.getItem("accessToken") || localStorage.getItem("token");
-        const response = await fetch(url.toString(), {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (!response.ok) throw new Error("Errore risposta server");
-        const data = await response.json();
+        const data = await getSegnlazioniVicine(userPos.lat, userPos.lon);
         setElementi(data);
       } catch (error) {
-        console.error("Errore recupero segnalazioni:", error);
+        console.error(error);
       } finally {
         setLoadingDati(false);
       }
     };
-    fetchVicine();
+    fetchData();
   }, [userPos]);
 
   if (isScannerOpen) {
     return (
       <Scanner
-        target={selectElemento}
+        target={setSelecetElemento}
         onClose={() => setIsScannerOpen(false)}
         currentLang={currentLang}
       />
@@ -97,12 +50,23 @@ export const MapFeature: React.FC<MapProps> = ({ currentLang }) => {
     <div className="map-page">
       {loadingGps && (
         <div className="gps">
-          <div style={{ fontSize: "2rem" }}>{<Loader />}</div>
+          <div>
+            <Loader />
+          </div>
         </div>
       )}
       {loadingDati && !loadingGps && (
-        <Loader message={FORM_TRANSLATIONS[currentLang].loading} />
+        // Pulsante  per lo Scanner
+
+        <Button
+          className="btn-scanner"
+          onClick={() => setIsScannerOpen(true)}
+          title="Scanner"
+        >
+          <i className="bi bi-camera-fill"></i>
+        </Button>
       )}
+      <Loader message={FORM_TRANSLATIONS[currentLang].loading} />
       {!loadingGps && userPos && (
         <MapContainer
           key={`mappa-${userPos.lat}-${userPos.lon}`}
@@ -126,7 +90,7 @@ export const MapFeature: React.FC<MapProps> = ({ currentLang }) => {
               key={el.id}
               position={[el.lat, el.lon]}
               icon={focuIcon}
-              eventHandlers={{ click: () => setSelectElemento(el) }}
+              eventHandlers={{ click: () => setSelecetElemento(el) }}
             >
               <Popup>{el.nomeProposto}</Popup>
             </Marker>
@@ -139,7 +103,7 @@ export const MapFeature: React.FC<MapProps> = ({ currentLang }) => {
             title: selectElemento.nomeProposto,
             desc: selectElemento.descrizione,
           }}
-          onClose={() => setSelectElemento(null)}
+          onClose={() => setSelecetElemento(null)}
           onOpenScanner={() => setIsScannerOpen(true)}
           currentLang={currentLang}
         />
