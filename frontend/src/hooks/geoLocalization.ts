@@ -21,7 +21,7 @@ export const geoLocalization = () => {
                 console.error("Errore Gps:", error);
                 setLoadingGps(false)
             },
-            { enableHighAccuracy: true, timeout: 5000}
+            { enableHighAccuracy: true, timeout: 15000}
         )
     },[])
     return {userPos, loadingGps};

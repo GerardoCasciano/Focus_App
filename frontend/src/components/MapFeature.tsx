@@ -8,6 +8,8 @@ import { FORM_TRANSLATIONS } from "../traslations";
 import { getSegnlazioniVicine } from "../api/apiSegnalazioniService";
 import { geoLocalization } from "../hooks/geolocalization";
 import { userIcon, focuIcon, ElementoUrbano, MapProps } from "../MapConfig";
+import { EmergenzaNazionale } from "../api/apiEmergenzeService";
+import { getSosByPosition } from "../api/apiEmergenzeService";
 
 export const MapFeature: React.FC<MapProps> = ({ currentLang }) => {
   const [elementi, setElementi] = useState<ElementoUrbano[]>([]);
@@ -18,22 +20,28 @@ export const MapFeature: React.FC<MapProps> = ({ currentLang }) => {
   const [isScannerOpen, setIsScannerOpen] = useState(false);
 
   const { userPos, loadingGps } = geoLocalization();
+  const [emergenza, setEmergenza] = useState<EmergenzaNazionale | null>(null);
 
   useEffect(() => {
     if (!userPos) return;
 
-    const fetchData = async () => {
+    const fetchAllData = async () => {
       try {
         setLoadingDati(true);
-        const data = await getSegnlazioniVicine(userPos.lat, userPos.lon);
+
+        const [data, dataSos] = await Promise.all([
+          getSegnlazioniVicine(userPos.lat, userPos.lon),
+          getSosByPosition(" ", userPos.lat, userPos.lon),
+        ]);
         setElementi(data);
+        setEmergenza(dataSos);
       } catch (error) {
         console.error(error);
       } finally {
         setLoadingDati(false);
       }
     };
-    fetchData();
+    fetchAllData();
   }, [userPos]);
 
   if (isScannerOpen) {
@@ -47,7 +55,7 @@ export const MapFeature: React.FC<MapProps> = ({ currentLang }) => {
   }
 
   return (
-    <div className="map-page">
+    <div className="map-page" style={{ position: "relative" }}>
       {loadingGps && (
         <div className="gps">
           <div>
@@ -55,47 +63,45 @@ export const MapFeature: React.FC<MapProps> = ({ currentLang }) => {
           </div>
         </div>
       )}
-      {loadingDati && !loadingGps && (
-        // Pulsante  per lo Scanner
 
-        <Button
-          className="btn-scanner"
-          onClick={() => setIsScannerOpen(true)}
-          title="Scanner"
-        >
-          <i className="bi bi-camera-fill"></i>
-        </Button>
-      )}
-      <Loader message={FORM_TRANSLATIONS[currentLang].loading} />
-      {!loadingGps && userPos && (
-        <MapContainer
-          key={`mappa-${userPos.lat}-${userPos.lon}`}
-          center={[userPos.lat, userPos.lon]}
-          zoom={15}
-          style={{ width: "100vw", height: "100vh" }}
-        >
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
+      {!loadingDati && userPos && (
+        <>
+          {loadingDati && (
+            <div>
+              {" "}
+              <Loader message={FORM_TRANSLATIONS[currentLang].loading} />
+            </div>
+          )}
 
-          {/* Marker utente  */}
-          <Marker position={[userPos.lat, userPos.lon]} icon={userIcon}>
-            <Popup> Sei qui</Popup>
-          </Marker>
+          <MapContainer
+            key="mappa-principale"
+            center={[userPos.lat, userPos.lon]}
+            zoom={15}
+            style={{ width: "100vw", height: "100vh" }}
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
 
-          {/* Marker dei monumenti  */}
-          {elementi.map((el) => (
-            <Marker
-              key={el.id}
-              position={[el.lat, el.lon]}
-              icon={focuIcon}
-              eventHandlers={{ click: () => setSelecetElemento(el) }}
-            >
-              <Popup>{el.nomeProposto}</Popup>
+            {/* Marker utente  */}
+            <Marker position={[userPos.lat, userPos.lon]} icon={userIcon}>
+              <Popup> Sei qui</Popup>
             </Marker>
-          ))}
-        </MapContainer>
+
+            {/* Marker dei monumenti  */}
+            {elementi.map((el) => (
+              <Marker
+                key={el.id}
+                position={[el.lat, el.lon]}
+                icon={focuIcon}
+                eventHandlers={{ click: () => setSelecetElemento(el) }}
+              >
+                <Popup>{el.nomeProposto}</Popup>
+              </Marker>
+            ))}
+          </MapContainer>
+        </>
       )}
       {selectElemento && (
         <MonumentCard
@@ -108,6 +114,29 @@ export const MapFeature: React.FC<MapProps> = ({ currentLang }) => {
           currentLang={currentLang}
         />
       )}
+
+      {/* button SOS  */}
+      <div className="btn-ui">
+        {emergenza && (
+          <Button
+            className="btn-phone"
+            onClick={() =>
+              (window.location.href = `tel:${emergenza.numeroEmergenza}`)
+            }
+            title="SOS"
+          >
+            <i className="bi bi-telephone-fill"></i>
+          </Button>
+        )}
+        {/* button scanner */}
+        <Button
+          className="btn-scanner"
+          onClick={() => setIsScannerOpen(true)}
+          title="Scanner"
+        >
+          <i className="bi bi-camera-fill"></i>
+        </Button>
+      </div>
     </div>
   );
 };

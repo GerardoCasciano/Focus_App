@@ -1,24 +1,40 @@
-.btn-scanner{
+.btn-scanner, .btn-phone{
     position: absolute;
     top: 20px;
     left:20px;
     width: 55px;
     height: 55px;
     border-radius: 12px;
-    background-color: #1b1b1b;
-    color: #02ccff;
-    border: 2px solid #02ccff;
+
     display: flex;
     align-items: center;
+    justify-content: center;
     font-size: 24px;
-    z-index: 1000;
+    z-index: 9999 !important;
     cursor: pointer;
     transition: all 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
 }
-
-.btn-scanner:hover {
+.btn-phone {
+    background-color: #dc3545; 
+    color: white;
+}
+.btn-scanner i {
+     color: #02ccff; 
+    font-size: 24px;
+}
+.btn-scanner:active .btn-phone:active{
+    transform: scale(0.92); 
     background-color: #02ccff;
-    color: #1b1b1b;
+}
+.btn-ui {
+          position: fixed;
+          bottom: 20px;
+          right: 10px;
+          display: flex;
+          flex-direction: column;
+          z-Index: 9999;
+          gap: 15px;
 }
 
 .leafolet-tooltip{
@@ -33,7 +49,7 @@
 
 /* La freccetta sotto la vignetta */
 .leaflet-tooltip-top:before {
-  border-top-color: #02ccff !important;
+  border-top-color: #020202 !important;
 }
 
 .monument-tooltip-text {
