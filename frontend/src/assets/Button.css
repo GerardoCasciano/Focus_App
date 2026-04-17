@@ -1,11 +1,10 @@
 .btn-scanner, .btn-phone{
-    position: absolute;
-    top: 20px;
-    left:20px;
+    position: relative;
+  
     width: 55px;
     height: 55px;
     border-radius: 12px;
-
+    padding: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -14,30 +13,38 @@
     cursor: pointer;
     transition: all 0.2s ease;
     -webkit-tap-highlight-color: transparent;
+    border: 2px solid white !important;
 }
-.btn-phone {
-    background-color: #dc3545; 
-    color: white;
+.btn-phone  {
+    background-color: #dc3545 !important; 
+    color: white !important;
 }
-.btn-scanner i {
-     color: #02ccff; 
-    font-size: 24px;
+.btn-scanner  {
+    background-color: #1b1b1b !important;
+     color: #02ccff !important; 
+ 
 }
-.btn-scanner:active .btn-phone:active{
+.btn-scanner:active, .btn-phone:active{
     transform: scale(0.92); 
-    background-color: #02ccff;
+filter: brightness(1.2);
 }
 .btn-ui {
-          position: fixed;
+          position: relative;
           bottom: 20px;
           right: 10px;
           display: flex;
           flex-direction: column;
-          z-Index: 9999;
+          z-Index: 9999 !important;
           gap: 15px;
+          pointer-events: auto;
+}
+.btn-phone i, .btn-scanner i {
+    font-size: 24px;
+    background: transparent !important; 
+    display: block;
 }
 
-.leafolet-tooltip{
+.leaflet-tooltip{
     background-color: #1b1b1b !important;
   color: #ffffff !important;
   border: 1px solid #02ccff !important;
@@ -49,7 +56,7 @@
 
 /* La freccetta sotto la vignetta */
 .leaflet-tooltip-top:before {
-  border-top-color: #020202 !important;
+  border-top-color:#1b1b1b !important;
 }
 
 .monument-tooltip-text {

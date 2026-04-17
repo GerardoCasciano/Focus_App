@@ -55,41 +55,50 @@ export const MapFeature: React.FC<MapProps> = ({ currentLang }) => {
   }
 
   return (
-    <div className="map-page" style={{ position: "relative" }}>
-      {loadingGps && (
-        <div className="gps">
-          <div>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100vh",
+        width: "100vw",
+        overflow: "hidden",
+      }}
+    >
+      <div className="map-page" style={{ position: "relative", flex: 1 }}>
+        {loadingGps && (
+          <div
+            className="gps"
+            style={{
+              position: "absolute",
+              zIndex: 1000,
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              background: "rgba(0,0,0,0.3)",
+            }}
+          >
             <Loader />
           </div>
-        </div>
-      )}
+        )}
 
-      {!loadingDati && userPos && (
-        <>
-          {loadingDati && (
-            <div>
-              {" "}
-              <Loader message={FORM_TRANSLATIONS[currentLang].loading} />
-            </div>
-          )}
-
+        {!loadingDati && userPos && (
           <MapContainer
             key="mappa-principale"
             center={[userPos.lat, userPos.lon]}
             zoom={15}
-            style={{ width: "100vw", height: "100vh" }}
+            style={{ width: "100%", height: "100%" }}
           >
             <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+              attribution="&copy; OpenStreetMap"
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
 
-            {/* Marker utente  */}
             <Marker position={[userPos.lat, userPos.lon]} icon={userIcon}>
               <Popup> Sei qui</Popup>
             </Marker>
 
-            {/* Marker dei monumenti  */}
             {elementi.map((el) => (
               <Marker
                 key={el.id}
@@ -101,22 +110,38 @@ export const MapFeature: React.FC<MapProps> = ({ currentLang }) => {
               </Marker>
             ))}
           </MapContainer>
-        </>
-      )}
-      {selectElemento && (
-        <MonumentCard
-          data={{
-            title: selectElemento.nomeProposto,
-            desc: selectElemento.descrizione,
-          }}
-          onClose={() => setSelecetElemento(null)}
-          onOpenScanner={() => setIsScannerOpen(true)}
-          currentLang={currentLang}
-        />
-      )}
+        )}
 
-      {/* button SOS  */}
-      <div className="btn-ui">
+        {selectElemento && (
+          <MonumentCard
+            data={{
+              title: selectElemento.nomeProposto,
+              desc: selectElemento.descrizione,
+            }}
+            onClose={() => setSelecetElemento(null)}
+            onOpenScanner={() => setIsScannerOpen(true)}
+            currentLang={currentLang}
+          />
+        )}
+      </div>
+
+      {/* display button */}
+      <div
+        className="btn-ui"
+        style={{
+          display: "flex",
+          height: "80px",
+          width: "100%",
+          flexDirection: "row",
+          justifyContent: "space-around",
+          alignItems: "center",
+          background: "#f5f1f1",
+          borderTop: "1px solid #02ccff",
+          padding: "10px",
+          zIndex: 1001,
+        }}
+      >
+        {/* SOS  */}
         {emergenza && (
           <Button
             className="btn-phone"
@@ -128,7 +153,7 @@ export const MapFeature: React.FC<MapProps> = ({ currentLang }) => {
             <i className="bi bi-telephone-fill"></i>
           </Button>
         )}
-        {/* button scanner */}
+        {/* Scanner  */}
         <Button
           className="btn-scanner"
           onClick={() => setIsScannerOpen(true)}
