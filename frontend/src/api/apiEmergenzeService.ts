@@ -5,6 +5,7 @@ export interface EmergenzaNazionale {
     numeroEmergenza: string;
     polizia: string;
     ambulanza: string;
+    vigiliDelFuoco: string;
     infoUtili: string;
 }
 

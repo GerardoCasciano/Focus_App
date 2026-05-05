@@ -4,12 +4,13 @@ import { Button } from "react-bootstrap";
 import { MonumentCard } from "./MonumentCard";
 import { Scanner } from "./Scanner";
 import Loader from "./Loader";
-import { FORM_TRANSLATIONS } from "../traslations";
+
 import { getSegnlazioniVicine } from "../api/apiSegnalazioniService";
 import { geoLocalization } from "../hooks/geolocalization";
 import { userIcon, focuIcon, ElementoUrbano, MapProps } from "../MapConfig";
 import { EmergenzaNazionale } from "../api/apiEmergenzeService";
 import { getSosByPosition } from "../api/apiEmergenzeService";
+import { EmergenzaMarkers } from "./EmergenzaMarkers";
 
 export const MapFeature: React.FC<MapProps> = ({ currentLang }) => {
   const [elementi, setElementi] = useState<ElementoUrbano[]>([]);
@@ -31,8 +32,11 @@ export const MapFeature: React.FC<MapProps> = ({ currentLang }) => {
 
         const [data, dataSos] = await Promise.all([
           getSegnlazioniVicine(userPos.lat, userPos.lon),
-          getSosByPosition(" ", userPos.lat, userPos.lon),
+
+          getSosByPosition("", userPos.lat, userPos.lon),
         ]);
+        console.log("Dati Segnalazioni:", data);
+        console.log("Dati SOS:", dataSos);
         setElementi(data);
         setEmergenza(dataSos);
       } catch (error) {
@@ -94,6 +98,13 @@ export const MapFeature: React.FC<MapProps> = ({ currentLang }) => {
               attribution="&copy; OpenStreetMap"
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
+            {emergenza && (
+              <EmergenzaMarkers
+                emergenzaNazionale={emergenza}
+                userPos={userPos}
+                currentLang={currentLang}
+              />
+            )}
 
             <Marker position={[userPos.lat, userPos.lon]} icon={userIcon}>
               <Popup> Sei qui</Popup>
@@ -126,21 +137,7 @@ export const MapFeature: React.FC<MapProps> = ({ currentLang }) => {
       </div>
 
       {/* display button */}
-      <div
-        className="btn-ui"
-        style={{
-          display: "flex",
-          height: "80px",
-          width: "100%",
-          flexDirection: "row",
-          justifyContent: "space-around",
-          alignItems: "center",
-          background: "#f5f1f1",
-          borderTop: "1px solid #02ccff",
-          padding: "10px",
-          zIndex: 1001,
-        }}
-      >
+      <div className="btn-ui">
         {/* SOS  */}
         {emergenza && (
           <Button

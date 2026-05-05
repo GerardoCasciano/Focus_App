@@ -28,7 +28,7 @@ export const EmergenzaMarkers: React.FC<EmergenzaMarkersProps> = ({
       {/* Marker Polizia  */}
       {emergenzaNazionale.polizia && (
         <Marker
-          position={[userPos.lat, userPos.lon + offset]}
+          position={[userPos.lat + offset, userPos.lon + offset]}
           icon={poliziaIcon}
         >
           <Popup>
@@ -49,7 +49,7 @@ export const EmergenzaMarkers: React.FC<EmergenzaMarkersProps> = ({
       {/* Marker Ambulanza  */}
       {emergenzaNazionale.ambulanza && (
         <Marker
-          position={[userPos.lat, userPos.lon + offset]}
+          position={[userPos.lat + offset, userPos.lon + offset]}
           icon={ambulanzaIcon}
         >
           <Popup>
@@ -69,7 +69,7 @@ export const EmergenzaMarkers: React.FC<EmergenzaMarkersProps> = ({
       {/* Marker Vigili del fuoco  */}
       {emergenzaNazionale.vigiliDelFuoco && (
         <Marker
-          position={[userPos.lat, userPos.lon + offset]}
+          position={[userPos.lat + offset, userPos.lon + offset]}
           icon={vigiliIcon}
         >
           <Popup>
@@ -87,7 +87,10 @@ export const EmergenzaMarkers: React.FC<EmergenzaMarkersProps> = ({
         </Marker>
       )}
       {emergenzaNazionale.infoUtili && (
-        <Marker position={[userPos.lat, userPos.lon + offset]} icon={infoIcon}>
+        <Marker
+          position={[userPos.lat + offset, userPos.lon + offset]}
+          icon={infoIcon}
+        >
           <Popup>
             <strong>{traslation.infoUtili || " INFO"}:</strong>
             <br />
